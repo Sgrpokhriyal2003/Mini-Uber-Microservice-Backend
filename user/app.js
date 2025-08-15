@@ -14,6 +14,6 @@ app.use(express.urlencoded({extended: true}))
 app.use(morgan('dev'))
 app.use(cookieParser())
 
-app.use("/user", userRoute)
+app.use("/", userRoute)
 
 module.exports = app

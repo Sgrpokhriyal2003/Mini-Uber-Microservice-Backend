@@ -112,6 +112,7 @@ module.exports.logout = async(req, res) => {
 
 module.exports.profile = async(req, res) => {
     try{
+        delete req.user._doc.password;
         res.status(200).json(req.user)
     }
     catch(error){
@@ -122,3 +123,4 @@ module.exports.profile = async(req, res) => {
         })
     }
 }
+
