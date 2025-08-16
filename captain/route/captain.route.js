@@ -9,6 +9,6 @@ router.post("/login", captainController.login)
 router.get("/profile", authMiddleware.captainAuth, captainController.profile)
 router.get("/logout", captainController.logout)
 router.patch("/toggle-availability", authMiddleware.captainAuth, captainController.toggleAvailability)
-// router.get("/new-ride", authMiddleware.captainAuth, captainController.waitForNewRide)
+router.get("/new-ride", authMiddleware.captainAuth, captainController.waitForRide)
 
 module.exports = router

@@ -2,6 +2,9 @@ const User = require("../model/user.model")
 const bcrypt = require("bcryptjs")
 const jwt = require('jsonwebtoken')
 const blacklisttokenModel = require("../model/blackListToken")
+const { subscribeToQueue } = require("../../ride/service/rabbit")
+const EventEmitter = require("events")
+const rideEventEmitter = new EventEmitter()
 
 module.exports.register = async(req, res) => {
     try{
@@ -124,3 +127,19 @@ module.exports.profile = async(req, res) => {
     }
 }
 
+module.exports.acceptedRide = async(req, res) => {
+    //long polling: wait for ride-accepted event
+    rideEventEmitter.once("ride-accepted", (data) => {
+        res.send(data)
+    })
+
+    //set timeout for long polling
+    setTimeout(() => {
+        res.status(204).send();
+    }, 30000)
+}
+
+subscribeToQueue('ride-accepted', async(msg) => {
+    const data = JSON.parse(msg)
+    rideEventEmitter.emit("ride-accepted", data)
+})

@@ -2,7 +2,9 @@ const captainModel = require('../model/captain.model')
 const blackListModel = require("../model/blacklisttokenmodel.model")
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const {subscribeToQueue} = require("../service/rabbit")
 
+const pendingRequests = []
 module.exports.register = async(req, res) => {
     try{
         const {name, email, password} = req.body
@@ -130,3 +132,29 @@ module.exports.toggleAvailability = async(req, res) => {
         })
     }
 }
+
+module.exports.waitForRide = async(req, res) => {
+    //set timeout for longpolling
+    req.setTimeout(30000, () => {
+        res.status(204).end() //no content
+    });
+
+    //add the res object to the pendingRequests array
+    pendingRequests.push(res)
+
+}
+
+
+
+//subscribe new-ride queue
+subscribeToQueue("new-ride", (data) => {
+    const rideData = (JSON.parse(data))
+
+    //send the new ride data to all pending requests
+    pendingRequests.forEach(res => {
+        res.json({data: rideData})
+    })
+
+    //clear the pending request
+    pendingRequests.length = 0
+})

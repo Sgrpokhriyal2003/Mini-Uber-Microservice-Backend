@@ -5,9 +5,12 @@ const cookieParser = require('cookie-parser')
 const userRoute = require("./routes/user.route")
 const morgan = require("morgan")
 const dbConnect = require('./db/db.conn')
+dbConnect()
+
+const rabbitMQ = require("./service/rabbit")
+rabbitMQ.connect()
 
 const app = express()
-dbConnect()
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))

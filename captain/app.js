@@ -5,8 +5,11 @@ const morgan = require("morgan")
 const cookieParser = require("cookie-parser")
 const captainRoute = require("./route/captain.route")
 const connectDB = require('./db/db')
-
 connectDB()
+
+const rabbitMQ = require("./service/rabbit")
+rabbitMQ.connect()
+
 const app = express()
 
 app.use(express.json())

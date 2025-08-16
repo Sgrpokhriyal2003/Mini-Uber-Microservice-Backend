@@ -8,6 +8,6 @@ router.post('/register', UserController.register)
 router.post('/login',  UserController.login)
 router.get('/logout', UserController.logout)
 router.get('/profile', authMiddleware.userAuth, UserController.profile)
-
+router.get("/accepted-ride", authMiddleware.userAuth, UserController.acceptedRide)
 
 module.exports = router
